@@ -1,0 +1,17 @@
+{
+  "name": "final",
+  "version": "1.0.0",
+  "description": "Kael Haney's Final Project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "author": "Kael Haney",
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}

@@ -89,10 +89,15 @@ async function getStateFunFact(req, res) {
     if (!req.stateData.funfacts || !req.stateData.funfacts.length) {
         return res.status(404).json({ 'message': 'No Fun Facts found for ' + req.stateData.state });
     }
+
+    res.json({
+        'funfact': req.stateData.funfacts[Math.floor(Math.random() * req.stateData.funfacts.length)]
+    });
 }
 
 module.exports = {
     getStates,
     getState,
-    getStateProperty
+    getStateProperty,
+    getStateFunFact
 }

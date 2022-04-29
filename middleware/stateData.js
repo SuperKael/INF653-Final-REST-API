@@ -3,7 +3,7 @@ const State = require('../models/State');
 // Loads stateData for a given state into req.stateData
 const stateData = async (req, res, next) => {
     if (!req?.params?.state) {
-        return res.status(400).json({ 'message': 'State code is required' });
+        return res.status(400).json({ 'message': 'State abbreviation parameter is required' });
     }
 
     let stateCode = req.params.state.toUpperCase();
@@ -16,7 +16,7 @@ const stateData = async (req, res, next) => {
 
     // If both sources of data return nothing, then the code must be invalid.
     if (!staticState && !state) {
-        return res.status(400).json({ 'message': 'Invalid State Code' });
+        return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
     }
 
     // Object spread syntax merges the two state objects.

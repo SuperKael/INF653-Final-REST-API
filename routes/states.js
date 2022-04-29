@@ -10,6 +10,9 @@ router.use('/:state', require('../middleware/stateData'));
 router.route('/:state')
     .get(statesController.getState);
 
+router.route('/:state/funfact')
+    .get(statesController.getStateFunFact);
+
 router.route('/:state/:property')
     .get(statesController.getStateProperty);
 

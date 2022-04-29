@@ -1,53 +1,33 @@
+// Load .env configuration
 require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const path = require('path');
-const cors = require('cors');
-const corsOptions = require('./config/corsOptions');
-const { logger } = require('./middleware/logEvents');
-const errorHandler = require('./middleware/errorHandler');
-const verifyJWT = require('./middleware/verifyJWT');
-const cookieParser = require('cookie-parser');
-const credentials = require('./middleware/credentials');
 const mongoose = require('mongoose');
-const connectDB = require('./config/dbConn');
-const PORT = process.env.PORT || 3500;
 
-// Connect to MongoDB
-connectDB();
+// Port to bind the server to
+const PORT = process.env.PORT || 80;
 
-// custom middleware logger
-app.use(logger);
+// Initiate database connection. This would take a while,
+// so it is best started as soon as possible.
+mongoose.connect(process.env.DATABASE_URI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+});
 
-// Handle options credentials check - before CORS!
-// and fetch cookies credentials requirement
-app.use(credentials);
-
-// Cross Origin Resource Sharing
-app.use(cors(corsOptions));
-
-// built-in middleware to handle urlencoded form data
+// Pre-processing middleware
 app.use(express.urlencoded({ extended: false }));
-
-// built-in middleware for json 
 app.use(express.json());
 
-//middleware for cookies
-app.use(cookieParser());
-
-//serve static files
+// Serve static files from the ./public directory.
 app.use('/', express.static(path.join(__dirname, '/public')));
 
-// routes
-app.use('/', require('./routes/root'));
-app.use('/register', require('./routes/register'));
-app.use('/auth', require('./routes/auth'));
-app.use('/refresh', require('./routes/refresh'));
-app.use('/logout', require('./routes/logout'));
+// Routes
+app.use('/', require('./routes/root'))
+app.use('/states', require('./routes/states'))
 
-app.use(verifyJWT);
-app.use('/employees', require('./routes/api/employees'));
-
+// 404 Handler
 app.all('*', (req, res) => {
     res.status(404);
     if (req.accepts('html')) {
@@ -59,9 +39,7 @@ app.all('*', (req, res) => {
     }
 });
 
-app.use(errorHandler);
-
+// Setup complete and DB connection established - initialize server
 mongoose.connection.once('connected', () => {
-    console.log('Connected to MongoDB');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });

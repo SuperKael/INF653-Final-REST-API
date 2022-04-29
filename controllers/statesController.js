@@ -59,6 +59,10 @@ async function getStateProperty(req, res) {
         ["capital_city", "capital"],
         ["admission_date", "admitted"]
     ]);
+    // Map to deal with inconsistent formatting of response data
+    const statePropertyHandlers = new Map([
+        ["population", (pop) => pop.toLocaleString("en-US")]
+    ])
 
     let property = req.params.property.toLowerCase();
     if (statePropertyAliases.has(property)) {
@@ -74,7 +78,7 @@ async function getStateProperty(req, res) {
     // req.stateData comes from the stateData middleware
     res.json({
         'state': req.stateData.state,
-        [label]: req.stateData[property]
+        [label]: statePropertyHandlers.has(property) ? statePropertyHandlers.get(property).apply(req.stateData[property]) : req.stateData[property]
     });
 }
 

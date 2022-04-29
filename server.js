@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
+const cors = require('cors');
 const mongoose = require('mongoose');
 
 // Port to bind the server to
@@ -15,6 +16,14 @@ mongoose.connect(process.env.DATABASE_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true
 });
+
+// CORS
+app.use(cors({
+    origin: (origin, callback) => {
+        callback(null, true);
+    },
+    optionsSuccessStatus: 200
+}));
 
 // Pre-processing middleware
 app.use(express.urlencoded({ extended: false }));

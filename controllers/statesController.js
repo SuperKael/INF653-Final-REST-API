@@ -84,8 +84,6 @@ async function getStateProperty(req, res) {
  */
 async function getStateFunFact(req, res) {
     // req.stateData comes from the stateData middleware
-    res.json(req.stateData);
-
     if (!req.stateData.funfacts || !req.stateData.funfacts.length) {
         return res.status(404).json({ 'message': 'No Fun Facts found for ' + req.stateData.state });
     }

@@ -78,7 +78,7 @@ async function getStateProperty(req, res) {
     // req.stateData comes from the stateData middleware
     res.json({
         'state': req.stateData.state,
-        [label]: statePropertyHandlers.has(property) ? statePropertyHandlers.get(property).apply(req.stateData[property]) : req.stateData[property]
+        [label]: statePropertyHandlers.has(property) ? statePropertyHandlers.get(property)(req.stateData[property]) : req.stateData[property]
     });
 }
 

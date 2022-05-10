@@ -6,7 +6,7 @@ const State = require('../models/State');
  * @type {import("express").RequestHandler}
  */
 async function getStates(req, res) {
-    const states = await State.find().exec();
+    const states = await State.find().lean();
     
     let mergedStates = require('../utils/stateDataJson').loadStaticStateData().map(stateData => {
         // Object spread syntax merges stateData with the matching entry in the states array.

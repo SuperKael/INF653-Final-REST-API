@@ -114,7 +114,7 @@ async function postStateFunFact(req, res) {
 
     funfacts.push(...req.body.funfacts);
 
-    res.json(await State.updateOne({ stateCode: req.stateData.code }, { funfacts }));
+    res.json(await State.updateOne({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true }));
 }
 
 /**

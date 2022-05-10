@@ -102,8 +102,11 @@ async function getStateFunFact(req, res) {
  * @type {import("express").RequestHandler}
  */
 async function postStateFunFact(req, res) {
-    if (!Array.isArray(req?.body?.funfacts) || !req.body.funfacts.length) {
-        return res.status(400).json({ 'message': 'funfacts property is required, and must not be empty' });
+    if (!req?.body?.funfacts) {
+        return res.status(400).json({ 'message': 'State fun facts value required' });
+    }
+    if (!Array.isArray(req?.body?.funfacts)) {
+        return res.status(400).json({ 'message': 'State fun facts value must be an array' });
     }
 
     let funfacts = req.stateData.funfacts;
@@ -114,10 +117,64 @@ async function postStateFunFact(req, res) {
     res.json(await State.updateOne({ _id: req.stateData._id }, { funfacts }));
 }
 
+/**
+ * Replaces a 'fun fact' for a specific state
+ * @type {import("express").RequestHandler}
+ */
+async function replaceStateFunFact(req, res) {
+    if (!req?.body?.index) {
+        return res.status(400).json({ 'message': 'State fun fact index value required' });
+    }
+    if (!req?.body?.funfact) {
+        return res.status(400).json({ 'message': 'State fun fact value required' });
+    }
+
+    let index = req.body.index - 1;
+
+    let funfacts = req.stateData.funfacts;
+    if (!Array.isArray(funfacts) || !funfacts.length) {
+        return res.status(404).json({ 'message': 'No Fun Facts found for ' + req.stateData.state });
+    }
+    if (index >= funfacts.length) {
+        return res.status(404).json({ 'message': 'No Fun Fact found at that index for ' + req.stateData.state });
+    }
+
+    funfacts[index] = req.body.funfact;
+
+    res.json(await State.updateOne({ _id: req.stateData._id }, { funfacts }));
+}
+
+/**
+ * Deletes a 'fun fact' for a specific state
+ * @type {import("express").RequestHandler}
+ */
+async function deleteStateFunFact(req, res) {
+    if (!req?.body?.index) {
+        return res.status(400).json({ 'message': 'State fun fact index value required' });
+    }
+
+    let index = req.body.index - 1;
+
+    let funfacts = req.stateData.funfacts;
+    if (!Array.isArray(funfacts) || !funfacts.length) {
+        return res.status(404).json({ 'message': 'No Fun Facts found for ' + req.stateData.state });
+    }
+    if (index >= funfacts.length) {
+        return res.status(404).json({ 'message': 'No Fun Fact found at that index for ' + req.stateData.state });
+    }
+
+    funfacts.splice(index, 1);
+    if (!funfacts.length) funfacts = undefined;
+
+    res.json(await State.updateOne({ _id: req.stateData._id }, { funfacts }));
+}
+
 module.exports = {
     getStates,
     getState,
     getStateProperty,
     getStateFunFact,
-    postStateFunFact
+    postStateFunFact,
+    replaceStateFunFact,
+    deleteStateFunFact
 }

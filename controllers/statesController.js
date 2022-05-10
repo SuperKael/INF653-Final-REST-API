@@ -118,5 +118,6 @@ module.exports = {
     getStates,
     getState,
     getStateProperty,
-    getStateFunFact
+    getStateFunFact,
+    postStateFunFact
 }

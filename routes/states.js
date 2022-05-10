@@ -11,7 +11,8 @@ router.route('/:state')
     .get(statesController.getState);
 
 router.route('/:state/funfact')
-    .get(statesController.getStateFunFact);
+    .get(statesController.getStateFunFact)
+    .post(statesController.postStateFunFact);
 
 router.route('/:state/:property')
     .get(statesController.getStateProperty);

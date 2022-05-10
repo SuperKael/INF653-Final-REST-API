@@ -12,7 +12,7 @@ const stateData = async (req, res, next) => {
     const staticState = require('../utils/stateDataJson').loadStaticStateData(stateCode);
 
     // Read state data from MongoDB
-    const state = await State.findOne({ 'stateCode': stateCode }).exec();
+    const state = await State.findOne({ 'stateCode': stateCode }).lean();
 
     // If both sources of data return nothing, then the code must be invalid.
     if (!staticState && !state) {

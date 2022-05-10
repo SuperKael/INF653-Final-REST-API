@@ -30,8 +30,6 @@ const stateData = async (req, res, next) => {
     // the stateCode property from the state entry in MongoDB is deleted.
     delete mergedState.stateCode;
 
-    console.log(mergedState)
-
     req.stateData = mergedState;
 
     next();

@@ -114,7 +114,7 @@ async function postStateFunFact(req, res) {
 
     funfacts.push(...req.body.funfacts);
 
-    res.json(await State.updateOne({ stateCode: req.stateData.code }, { stateCode: req.stateData.code, funfacts }, { upsert: true, setDefaultsOnInsert: true }).lean);
+    res.json(await State.updateOne({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true }).lean);
 }
 
 /**
@@ -164,9 +164,11 @@ async function deleteStateFunFact(req, res) {
     }
 
     funfacts.splice(index, 1);
-    if (!funfacts.length) funfacts = undefined;
-
-    res.json(await State.updateOne({ stateCode: req.stateData.code }, { funfacts }));
+    if (funfacts.length) {
+        res.json(await State.updateOne({ stateCode: req.stateData.code }, { funfacts }));
+    } else {
+        res.json(await State.updateOne({ stateCode: req.stateData.code }, { $unset: { funfacts: [] } }));
+    }
 }
 
 module.exports = {

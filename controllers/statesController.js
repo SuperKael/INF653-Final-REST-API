@@ -115,7 +115,7 @@ async function postStateFunFact(req, res) {
 
     funfacts.push(...req.body.funfacts);
 
-    stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
+    let stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
     stateData.funfacts = funfacts;
     res.json(stateData);
 }
@@ -144,7 +144,7 @@ async function replaceStateFunFact(req, res) {
 
     funfacts[index] = req.body.funfact;
 
-    stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
+    let stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
     stateData.funfacts = funfacts;
     res.json(stateData);
 }
@@ -178,7 +178,7 @@ async function deleteStateFunFact(req, res) {
         stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { $unset: { funfacts } });
     }
 
-    stateData.funfacts = funfacts
+    stateData.funfacts = funfacts;
     res.json(stateData);
 }
 

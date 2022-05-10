@@ -22,7 +22,7 @@ async function getStates(req, res) {
     });
 
     // If the contig query parameter is specified, filters the states appropriately
-    if (req?.query?.contig != null) {
+    if (req?.query?.contig != null && (req.query.contig.toLowerCase() == 'true' || req.query.contig.toLowerCase() == 'false')) {
         let contig = req.query.contig.toLowerCase() == 'true';
         mergedStates = mergedStates.filter(stateData => (stateData.code == 'AK' || stateData.code == 'HI') != contig);
     }
@@ -95,6 +95,23 @@ async function getStateFunFact(req, res) {
     res.json({
         'funfact': req.stateData.funfacts[Math.floor(Math.random() * req.stateData.funfacts.length)]
     });
+}
+
+/**
+ * Posts 'fun facts' for a specific state
+ * @type {import("express").RequestHandler}
+ */
+async function postStateFunFact(req, res) {
+    if (!Array.isArray(req?.body?.funfacts) || !req.body.funfacts.length) {
+        return res.status(400).json({ 'message': 'funfacts property is required, and must not be empty' });
+    }
+
+    let funfacts = req.stateData.funfacts;
+    if (!Array.isArray(funfacts)) funfacts = [];
+
+    funfacts.push(...req.body.funfacts);
+
+    res.json(await State.updateOne({ _id: req.stateData._id }, { funfacts }));
 }
 
 module.exports = {

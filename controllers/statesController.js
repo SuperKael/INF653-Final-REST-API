@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const stateData = require('../middleware/stateData');
 const State = require('../models/State');
 
 /**
@@ -114,7 +115,9 @@ async function postStateFunFact(req, res) {
 
     funfacts.push(...req.body.funfacts);
 
-    res.json(await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true }));
+    stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
+    stateData.funfacts = funfacts;
+    res.json(stateData);
 }
 
 /**
@@ -141,7 +144,9 @@ async function replaceStateFunFact(req, res) {
 
     funfacts[index] = req.body.funfact;
 
-    res.json(await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }));
+    stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
+    stateData.funfacts = funfacts;
+    res.json(stateData);
 }
 
 /**
@@ -164,11 +169,17 @@ async function deleteStateFunFact(req, res) {
     }
 
     funfacts.splice(index, 1);
+
+    let stateData;
+
     if (funfacts.length) {
-        res.json(await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }));
+        stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { funfacts }, { upsert: true, setDefaultsOnInsert: true });
     } else {
-        res.json(await State.findOneAndUpdate({ stateCode: req.stateData.code }, { $unset: { funfacts: [] } }));
+        stateData = await State.findOneAndUpdate({ stateCode: req.stateData.code }, { $unset: { funfacts } });
     }
+
+    stateData.funfacts = funfacts
+    res.json(stateData);
 }
 
 module.exports = {
